@@ -59,7 +59,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
 
     if (!author) {
         return (
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto py-8 px-4">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold mb-4">Author Not Found</h1>
                     <p className="text-muted-foreground mb-8">
@@ -74,7 +74,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
     }
 
     return (
-        <div className="container mx-auto py-8 space-y-8">
+        <div className="container mx-auto py-8 px-4 space-y-8">
             {/* Back Button */}
             <Button variant="ghost" asChild className="mb-4">
                 <Link href="/" className="flex items-center space-x-2">

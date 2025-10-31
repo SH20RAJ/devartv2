@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { SyntaxHighlighter } from "@/components/syntax-highlighter";
 import { Heart, MessageCircle, Clock, ExternalLink, ArrowLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
@@ -49,7 +50,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     const timeAgo = formatDistanceToNow(publishedDate, { addSuffix: true });
 
     return (
-        <div className="container mx-auto py-8 max-w-4xl">
+        <div className="container mx-auto py-8 px-4 max-w-4xl">
             <div className="space-y-8">
                 {/* Back Button */}
                 <Button variant="ghost" asChild className="mb-4">
@@ -150,10 +151,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 {/* Article Content */}
                 <Card>
                     <CardContent className="pt-6">
-                        <div
-                            className="prose prose-lg max-w-none dark:prose-invert"
-                            dangerouslySetInnerHTML={{ __html: article.body_html || '' }}
-                        />
+                        <SyntaxHighlighter>
+                            <div
+                                className="prose prose-lg max-w-none"
+                                dangerouslySetInnerHTML={{ __html: article.body_html || '' }}
+                            />
+                        </SyntaxHighlighter>
                     </CardContent>
                 </Card>
 

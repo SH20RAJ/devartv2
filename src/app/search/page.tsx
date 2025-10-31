@@ -57,7 +57,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
     const query = searchParams.q || '';
 
     return (
-        <div className="container mx-auto py-8 space-y-8">
+        <div className="container mx-auto py-8 px-4 space-y-8">
             {/* Back Button */}
             <Button variant="ghost" asChild className="mb-4">
                 <Link href="/" className="flex items-center space-x-2">

@@ -17,7 +17,7 @@ export default function Error({
     }, [error]);
 
     return (
-        <div className="container mx-auto py-16">
+        <div className="container mx-auto py-16 px-4">
             <Card className="max-w-md mx-auto">
                 <CardContent className="pt-6">
                     <div className="text-center space-y-6">

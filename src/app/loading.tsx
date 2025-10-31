@@ -2,7 +2,7 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 
 export default function Loading() {
     return (
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto py-8 px-4">
             <div className="space-y-8">
                 <div className="space-y-2">
                     <div className="h-10 bg-muted rounded w-1/3 animate-pulse" />

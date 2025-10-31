@@ -14,7 +14,14 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            const articles = await response.json();
+
+            // Ensure tag_list is always an array for all articles
+            return articles.map((article: any) => ({
+                ...article,
+                tag_list: Array.isArray(article.tag_list) ? article.tag_list :
+                    typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
+            }));
         } catch (error) {
             console.error('Error fetching latest articles:', error);
             return [];
@@ -32,7 +39,14 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            const articles = await response.json();
+
+            // Ensure tag_list is always an array for all articles
+            return articles.map((article: any) => ({
+                ...article,
+                tag_list: Array.isArray(article.tag_list) ? article.tag_list :
+                    typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
+            }));
         } catch (error) {
             console.error('Error fetching top articles:', error);
             return [];
@@ -50,7 +64,14 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            const articles = await response.json();
+
+            // Ensure tag_list is always an array for all articles
+            return articles.map((article: any) => ({
+                ...article,
+                tag_list: Array.isArray(article.tag_list) ? article.tag_list :
+                    typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
+            }));
         } catch (error) {
             console.error('Error searching articles:', error);
             return [];
@@ -96,7 +117,14 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            const articles = await response.json();
+
+            // Ensure tag_list is always an array for all articles
+            return articles.map((article: any) => ({
+                ...article,
+                tag_list: Array.isArray(article.tag_list) ? article.tag_list :
+                    typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
+            }));
         } catch (error) {
             console.error('Error fetching user articles:', error);
             return [];
