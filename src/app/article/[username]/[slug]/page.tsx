@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { DevToAPI } from "@/lib/api";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SyntaxHighlighter } from "@/components/syntax-highlighter";
+import { VisitorBadge } from "@/components/visitor-badge";
 import { Heart, MessageCircle, Clock, ExternalLink, ArrowLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
@@ -81,9 +82,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                             ))}
                         </div>
 
-                        <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-                            {article.title}
-                        </h1>
+                        <div className="flex items-start justify-between gap-4">
+                            <h1 className="text-3xl md:text-4xl font-bold leading-tight flex-1">
+                                {article.title}
+                            </h1>
+                            <VisitorBadge className="flex-shrink-0" />
+                        </div>
 
                         <p className="text-xl text-muted-foreground">
                             {article.description}

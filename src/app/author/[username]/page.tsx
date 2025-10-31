@@ -2,21 +2,28 @@ import { Suspense } from "react";
 import { DevToAPI } from "@/lib/api";
 import { ArticleCard } from "@/components/article-card";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { VisitorBadge } from "@/components/visitor-badge";
+import { Pagination } from "@/components/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ExternalLink, ArrowLeft, Github, Twitter, Globe } from "lucide-react";
 import Link from "next/link";
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 
 interface AuthorPageProps {
     params: Promise<{
         username: string;
     }>;
+    searchParams: {
+        page?: string;
+    };
 }
 
-async function AuthorArticles({ username }: { username: string }) {
-    const articles = await DevToAPI.getUserArticles(username, 1, 20);
+async function AuthorArticles({ username, page }: { username: string; page: number }) {
+    const articles = await DevToAPI.getUserArticles(username, page, 12);
 
     if (articles.length === 0) {
         return (
@@ -27,10 +34,17 @@ async function AuthorArticles({ username }: { username: string }) {
     }
 
     return (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-            ))}
+        <div className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                ))}
+            </div>
+            <Pagination
+                currentPage={page}
+                totalPages={5}
+                baseUrl={`/author/${username}`}
+            />
         </div>
     );
 }
@@ -52,8 +66,9 @@ export async function generateMetadata({ params }: AuthorPageProps) {
     };
 }
 
-export default async function AuthorPage({ params }: AuthorPageProps) {
+export default async function AuthorPage({ params, searchParams }: AuthorPageProps) {
     const { username } = await params;
+    const currentPage = parseInt(searchParams.page || '1');
     const articles = await DevToAPI.getUserArticles(username, 1, 1);
     const author = articles[0]?.user;
 
@@ -63,7 +78,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                 <div className="text-center">
                     <h1 className="text-2xl font-bold mb-4">Author Not Found</h1>
                     <p className="text-muted-foreground mb-8">
-                        The author you're looking for doesn't exist or has no articles.
+                        The author you&apos;re looking for doesn&apos;t exist or has no articles.
                     </p>
                     <Button asChild>
                         <Link href="/">Back to Home</Link>
@@ -93,9 +108,12 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                         </Avatar>
 
                         <div className="flex-1 space-y-4">
-                            <div>
-                                <h1 className="text-3xl font-bold">{author.name}</h1>
-                                <p className="text-xl text-muted-foreground">@{author.username}</p>
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h1 className="text-3xl font-bold">{author.name}</h1>
+                                    <p className="text-xl text-muted-foreground">@{author.username}</p>
+                                </div>
+                                <VisitorBadge />
                             </div>
 
                             <div className="flex items-center space-x-4">
@@ -164,8 +182,8 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                     <CardTitle>Articles by {author.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Suspense fallback={<LoadingSkeleton count={6} />}>
-                        <AuthorArticles username={username} />
+                    <Suspense fallback={<LoadingSkeleton count={12} />}>
+                        <AuthorArticles username={username} page={currentPage} />
                     </Suspense>
                 </CardContent>
             </Card>

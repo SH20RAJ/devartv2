@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/search-bar";
@@ -39,7 +40,9 @@ export function Navigation() {
 
                 <div className="flex items-center space-x-4">
                     <div className="w-full max-w-sm">
-                        <SearchBar />
+                        <Suspense fallback={<div className="h-9 w-full bg-muted rounded-md animate-pulse" />}>
+                            <SearchBar />
+                        </Suspense>
                     </div>
                 </div>
             </div>

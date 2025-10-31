@@ -11,10 +11,9 @@ import { formatDistanceToNow } from "date-fns";
 
 interface ArticleCardProps {
     article: DevToArticle;
-    showFullContent?: boolean;
 }
 
-export function ArticleCard({ article, showFullContent = false }: ArticleCardProps) {
+export function ArticleCard({ article }: ArticleCardProps) {
     const publishedDate = new Date(article.published_at);
     const timeAgo = formatDistanceToNow(publishedDate, { addSuffix: true });
 

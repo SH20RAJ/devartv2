@@ -14,10 +14,10 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const articles = await response.json();
+            const articles = await response.json() as DevToArticle[];
 
             // Ensure tag_list is always an array for all articles
-            return articles.map((article: any) => ({
+            return articles.map((article) => ({
                 ...article,
                 tag_list: Array.isArray(article.tag_list) ? article.tag_list :
                     typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
@@ -39,10 +39,10 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const articles = await response.json();
+            const articles = await response.json() as DevToArticle[];
 
             // Ensure tag_list is always an array for all articles
-            return articles.map((article: any) => ({
+            return articles.map((article) => ({
                 ...article,
                 tag_list: Array.isArray(article.tag_list) ? article.tag_list :
                     typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
@@ -64,10 +64,10 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const articles = await response.json();
+            const articles = await response.json() as DevToArticle[];
 
             // Ensure tag_list is always an array for all articles
-            return articles.map((article: any) => ({
+            return articles.map((article) => ({
                 ...article,
                 tag_list: Array.isArray(article.tag_list) ? article.tag_list :
                     typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []
@@ -89,7 +89,7 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const article = await response.json();
+            const article = await response.json() as DevToArticle;
 
             // Ensure tag_list is always an array
             if (article && typeof article.tag_list === 'string') {
@@ -117,10 +117,10 @@ export class DevToAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const articles = await response.json();
+            const articles = await response.json() as DevToArticle[];
 
             // Ensure tag_list is always an array for all articles
-            return articles.map((article: any) => ({
+            return articles.map((article) => ({
                 ...article,
                 tag_list: Array.isArray(article.tag_list) ? article.tag_list :
                     typeof article.tag_list === 'string' ? article.tag_list.split(',').map((tag: string) => tag.trim()) : []

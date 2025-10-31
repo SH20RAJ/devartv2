@@ -1,11 +1,25 @@
 import { Suspense } from "react";
 import { DevToAPI } from "@/lib/api";
+import { VisitorBadge } from "@/components/visitor-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, ExternalLink } from "lucide-react";
 import Link from "next/link";
+
+interface AuthorStats {
+    user: {
+        username: string;
+        name: string;
+        profile_image: string;
+        profile_image_90: string;
+    };
+    articleCount: number;
+    totalReactions: number;
+    totalComments: number;
+    tags: Set<string>;
+}
 
 async function PopularAuthors() {
     // Get articles from multiple pages to find diverse authors
@@ -34,16 +48,16 @@ async function PopularAuthors() {
         acc[username].totalComments += article.comments_count;
         article.tag_list.forEach(tag => acc[username].tags.add(tag));
         return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, AuthorStats>);
 
     // Convert to array and sort by engagement
     const authors = Object.values(authorStats)
-        .sort((a: any, b: any) => (b.totalReactions + b.totalComments) - (a.totalReactions + a.totalComments))
+        .sort((a: AuthorStats, b: AuthorStats) => (b.totalReactions + b.totalComments) - (a.totalReactions + a.totalComments))
         .slice(0, 24); // Show top 24 authors
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {authors.map((authorData: any) => (
+            {authors.map((authorData: AuthorStats) => (
                 <Card key={authorData.user.username} className="hover:shadow-lg transition-shadow">
                     <CardHeader className="text-center">
                         <Link href={`/author/${authorData.user.username}`}>
@@ -131,14 +145,17 @@ export default function AuthorsPage() {
             </Button>
 
             {/* Page Header */}
-            <div className="space-y-2">
-                <div className="flex items-center space-x-3">
-                    <Users className="h-8 w-8 text-primary" />
-                    <h1 className="text-4xl font-bold tracking-tight">Popular Authors</h1>
+            <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                    <div className="flex items-center space-x-3">
+                        <Users className="h-8 w-8 text-primary" />
+                        <h1 className="text-4xl font-bold tracking-tight">Popular Authors</h1>
+                    </div>
+                    <p className="text-xl text-muted-foreground">
+                        Discover talented developers and their contributions to the community
+                    </p>
                 </div>
-                <p className="text-xl text-muted-foreground">
-                    Discover talented developers and their contributions to the community
-                </p>
+                <VisitorBadge />
             </div>
 
             {/* Authors Grid */}
