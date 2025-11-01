@@ -11,10 +11,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const dynamic = 'force-dynamic';
 
 interface HomeProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     tab?: string;
-  };
+  }>;
 }
 
 async function LatestArticles({ page }: { page: number }) {
@@ -22,7 +22,7 @@ async function LatestArticles({ page }: { page: number }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (
           <ArticleCard key={article.id} article={article} />
         ))}
@@ -42,7 +42,7 @@ async function TopArticles({ page }: { page: number }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (
           <ArticleCard key={article.id} article={article} />
         ))}
@@ -57,21 +57,24 @@ async function TopArticles({ page }: { page: number }) {
   );
 }
 
-export default function Home({ searchParams }: HomeProps) {
-  const currentPage = parseInt(searchParams.page || '1');
-  const activeTab = searchParams.tab || 'latest';
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const currentPage = parseInt(params.page || '1');
+  const activeTab = params.tab || 'latest';
 
   return (
-    <div className="container mx-auto py-8 px-4 space-y-8">
+    <div className="container mx-auto py-4 md:py-8 px-4 space-y-6 md:space-y-8">
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight">DevArt</h1>
-            <p className="text-xl text-muted-foreground">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight">DevArt</h1>
+            <p className="text-base md:text-xl text-muted-foreground">
               Discover the latest programming articles and developer insights
             </p>
           </div>
-          <VisitorBadge />
+          <div className="self-start md:self-auto">
+            <VisitorBadge />
+          </div>
         </div>
       </div>
 

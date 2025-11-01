@@ -66,11 +66,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
                     <div className="flex-1 min-w-0">
                         <Link
                             href={`/author/${article.user.username}`}
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-sm font-medium hover:text-primary transition-colors truncate block"
                         >
                             {article.user.name}
                         </Link>
-                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                        <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-y-0 md:space-x-4 text-xs text-muted-foreground">
                             <span className="flex items-center space-x-1">
                                 <Clock className="h-3 w-3" />
                                 <span>{timeAgo}</span>
@@ -81,7 +81,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 </div>
             </CardContent>
 
-            <CardFooter className="flex items-center justify-between pt-0">
+            <CardFooter className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 pt-0">
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                     <span className="flex items-center space-x-1">
                         <Heart className="h-4 w-4" />
@@ -93,8 +93,8 @@ export function ArticleCard({ article }: ArticleCardProps) {
                     </span>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" asChild>
+                <div className="flex items-center space-x-2 w-full md:w-auto">
+                    <Button variant="ghost" size="sm" className="flex-1 md:flex-none" asChild>
                         <Link href={`/article/${article.user.username}/${article.slug}`}>
                             Read More
                         </Link>
