@@ -1,95 +1,52 @@
-import { Suspense } from "react";
-import { DevToAPI } from "@/lib/api";
-import { ArticleCard } from "@/components/article-card";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { ClientUserArticles } from "@/components/client-user-articles";
 import { VisitorBadge } from "@/components/visitor-badge";
-import { Pagination } from "@/components/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, ArrowLeft, Github, Twitter, Globe } from "lucide-react";
+import { ExternalLink, ArrowLeft, User } from "lucide-react";
 import Link from "next/link";
-
-// Force dynamic rendering for this page
-export const dynamic = 'force-dynamic';
+import { Metadata } from "next";
 
 interface AuthorPageProps {
     params: Promise<{
         username: string;
     }>;
-    searchParams: {
+    searchParams: Promise<{
         page?: string;
-    };
+    }>;
 }
 
-async function AuthorArticles({ username, page }: { username: string; page: number }) {
-    const articles = await DevToAPI.getUserArticles(username, page, 12);
-
-    if (articles.length === 0) {
-        return (
-            <div className="text-center py-12">
-                <p className="text-muted-foreground">No articles found for this author.</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {articles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                ))}
-            </div>
-            <Pagination
-                currentPage={page}
-                totalPages={5}
-                baseUrl={`/author/${username}`}
-            />
-        </div>
-    );
-}
-
-export async function generateMetadata({ params }: AuthorPageProps) {
+export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
     const { username } = await params;
-    const articles = await DevToAPI.getUserArticles(username, 1, 1);
-    const author = articles[0]?.user;
-
-    if (!author) {
-        return {
-            title: "Author Not Found",
-        };
-    }
 
     return {
-        title: `${author.name} (@${author.username}) | DevArt`,
-        description: `Articles by ${author.name} on DevArt`,
+        title: `@${username} | DevArt`,
+        description: `Articles by @${username} on DevArt - Discover programming articles and developer insights`,
+        keywords: `${username}, programming, development, coding, articles, author`,
+        openGraph: {
+            title: `@${username} | DevArt`,
+            description: `Articles by @${username} on DevArt`,
+            type: 'profile',
+            url: `https://devto.30tools.com/author/${username}`,
+        },
+        twitter: {
+            card: 'summary',
+            title: `@${username} | DevArt`,
+            description: `Articles by @${username} on DevArt`,
+        },
+        alternates: {
+            canonical: `https://devto.30tools.com/author/${username}`,
+        },
     };
 }
 
 export default async function AuthorPage({ params, searchParams }: AuthorPageProps) {
     const { username } = await params;
-    const currentPage = parseInt(searchParams.page || '1');
-    const articles = await DevToAPI.getUserArticles(username, 1, 1);
-    const author = articles[0]?.user;
-
-    if (!author) {
-        return (
-            <div className="container mx-auto py-8 px-4">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Author Not Found</h1>
-                    <p className="text-muted-foreground mb-8">
-                        The author you&apos;re looking for doesn&apos;t exist or has no articles.
-                    </p>
-                    <Button asChild>
-                        <Link href="/">Back to Home</Link>
-                    </Button>
-                </div>
-            </div>
-        );
-    }
+    const searchParamsData = await searchParams;
+    const currentPage = parseInt(searchParamsData.page || '1');
 
     return (
-        <div className="container mx-auto py-8 px-4 space-y-8">
+        <div className="container mx-auto py-4 md:py-8 px-4 space-y-6 md:space-y-8">
             {/* Back Button */}
             <Button variant="ghost" asChild className="mb-4">
                 <Link href="/" className="flex items-center space-x-2">
@@ -98,70 +55,32 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
                 </Link>
             </Button>
 
-            {/* Author Profile */}
+            {/* Author Profile Header */}
             <Card>
                 <CardHeader>
-                    <div className="flex items-start space-x-6">
-                        <Avatar className="h-24 w-24">
-                            <AvatarImage src={author.profile_image} alt={author.name} />
-                            <AvatarFallback className="text-2xl">{author.name.charAt(0)}</AvatarFallback>
+                    <div className="flex flex-col space-y-4 md:flex-row md:items-start md:space-y-0 md:space-x-6">
+                        <Avatar className="h-20 w-20 md:h-24 md:w-24 self-center md:self-start">
+                            <AvatarImage src={`https://dev.to/api/users/by_username?url=${username}`} alt={username} />
+                            <AvatarFallback className="text-xl md:text-2xl">
+                                <User className="h-8 w-8 md:h-12 md:w-12" />
+                            </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex-1 space-y-4">
-                            <div className="flex items-start justify-between">
+                        <div className="flex-1 space-y-4 text-center md:text-left">
+                            <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
                                 <div>
-                                    <h1 className="text-3xl font-bold">{author.name}</h1>
-                                    <p className="text-xl text-muted-foreground">@{author.username}</p>
+                                    <h1 className="text-2xl md:text-3xl font-bold">@{username}</h1>
+                                    <p className="text-lg md:text-xl text-muted-foreground">Developer & Writer</p>
                                 </div>
-                                <VisitorBadge />
+                                <div className="self-center md:self-auto">
+                                    <VisitorBadge />
+                                </div>
                             </div>
 
-                            <div className="flex items-center space-x-4">
-                                {author.twitter_username && (
-                                    <Button variant="outline" size="sm" asChild>
-                                        <a
-                                            href={`https://twitter.com/${author.twitter_username}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center space-x-2"
-                                        >
-                                            <Twitter className="h-4 w-4" />
-                                            <span>Twitter</span>
-                                        </a>
-                                    </Button>
-                                )}
-
-                                {author.github_username && (
-                                    <Button variant="outline" size="sm" asChild>
-                                        <a
-                                            href={`https://github.com/${author.github_username}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center space-x-2"
-                                        >
-                                            <Github className="h-4 w-4" />
-                                            <span>GitHub</span>
-                                        </a>
-                                    </Button>
-                                )}
-
-                                {author.website_url && (
-                                    <Button variant="outline" size="sm" asChild>
-                                        <a
-                                            href={author.website_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center space-x-2"
-                                        >
-                                            <Globe className="h-4 w-4" />
-                                            <span>Website</span>
-                                        </a>
-                                    </Button>
-                                )}
-
+                            <div className="flex flex-wrap justify-center md:justify-start items-center gap-2">
                                 <Button variant="outline" size="sm" asChild>
                                     <a
-                                        href={`https://dev.to/${author.username}`}
+                                        href={`https://dev.to/${username}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center space-x-2"
@@ -179,12 +98,10 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
             {/* Author's Articles */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Articles by {author.name}</CardTitle>
+                    <CardTitle>Articles by @{username}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Suspense fallback={<LoadingSkeleton count={12} />}>
-                        <AuthorArticles username={username} page={currentPage} />
-                    </Suspense>
+                    <ClientUserArticles username={username} page={currentPage} />
                 </CardContent>
             </Card>
         </div>

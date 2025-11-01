@@ -1,14 +1,8 @@
-import { Suspense } from "react";
-import { DevToAPI } from "@/lib/api";
-import { ArticleCard } from "@/components/article-card";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { VisitorBadge } from "@/components/visitor-badge";
-import { Pagination } from "@/components/pagination";
+import { ClientArticlesGrid } from "@/components/client-articles-grid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Force dynamic rendering for this page
-export const dynamic = 'force-dynamic';
+import { Metadata } from "next";
 
 interface HomeProps {
   searchParams: Promise<{
@@ -17,45 +11,22 @@ interface HomeProps {
   }>;
 }
 
-async function LatestArticles({ page }: { page: number }) {
-  const articles = await DevToAPI.getLatestArticles(page, 12);
-
-  return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-      </div>
-      <Pagination
-        currentPage={page}
-        totalPages={10}
-        baseUrl="/"
-        searchParams={{ tab: 'latest' }}
-      />
-    </div>
-  );
-}
-
-async function TopArticles({ page }: { page: number }) {
-  const articles = await DevToAPI.getTopArticles(page, 12);
-
-  return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-      </div>
-      <Pagination
-        currentPage={page}
-        totalPages={10}
-        baseUrl="/"
-        searchParams={{ tab: 'trending' }}
-      />
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  title: "DevArt - Programming Articles & Developer Resources",
+  description: "Discover the latest programming articles, coding tutorials, and developer resources from the Dev.to community. Stay updated with trending tech content.",
+  keywords: "programming, development, coding, tutorials, javascript, python, react, nextjs, web development, software engineering",
+  openGraph: {
+    title: "DevArt - Programming Articles & Developer Resources",
+    description: "Discover the latest programming articles, coding tutorials, and developer resources from the Dev.to community.",
+    type: "website",
+    url: "https://devto.30tools.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevArt - Programming Articles & Developer Resources",
+    description: "Discover the latest programming articles, coding tutorials, and developer resources from the Dev.to community.",
+  },
+};
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
@@ -93,9 +64,12 @@ export default async function Home({ searchParams }: HomeProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Suspense fallback={<LoadingSkeleton count={12} />}>
-                <LatestArticles page={currentPage} />
-              </Suspense>
+              <ClientArticlesGrid
+                type="latest"
+                page={currentPage}
+                baseUrl="/"
+                searchParams={{ tab: 'latest' }}
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -109,9 +83,12 @@ export default async function Home({ searchParams }: HomeProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Suspense fallback={<LoadingSkeleton count={12} />}>
-                <TopArticles page={currentPage} />
-              </Suspense>
+              <ClientArticlesGrid
+                type="top"
+                page={currentPage}
+                baseUrl="/"
+                searchParams={{ tab: 'trending' }}
+              />
             </CardContent>
           </Card>
         </TabsContent>
